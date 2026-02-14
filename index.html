@@ -436,21 +436,19 @@
 
   /* Added Collaborators section */
   .added-section {
-    margin-top: 16px;
     display: grid;
     grid-template-rows: 0fr;
-    opacity: 0;
-    transition: grid-template-rows 0.25s ease, opacity 0.2s ease, margin 0.25s ease;
-    overflow: hidden;
+    transition: grid-template-rows 0.3s ease;
+    margin-top: 0;
   }
 
-  .added-section > * {
+  .added-section__inner {
     overflow: hidden;
   }
 
   .added-section.active {
     grid-template-rows: 1fr;
-    opacity: 1;
+    margin-top: 16px;
   }
 
   .added-label {
@@ -649,8 +647,10 @@
       </div>
 
       <div class="added-section" id="addedSection">
-        <div class="added-label">Added Collaborators</div>
-        <div class="added-tags" id="addedTags"></div>
+        <div class="added-section__inner">
+          <div class="added-label">Added Collaborators</div>
+          <div class="added-tags" id="addedTags"></div>
+        </div>
       </div>
     </div>
 
