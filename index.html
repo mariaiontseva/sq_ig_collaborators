@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Instagram Post — SmarterQueue</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  @font-face {
+    font-family: 'Proxima Nova';
+    src: local('Proxima Nova'), local('ProximaNova-Regular');
+    font-weight: 400;
+  }
+  @font-face {
+    font-family: 'Proxima Nova';
+    src: local('Proxima Nova Medium'), local('ProximaNova-Medium');
+    font-weight: 500;
+  }
+  @font-face {
+    font-family: 'Proxima Nova';
+    src: local('Proxima Nova Semibold'), local('ProximaNova-Semibold'), local('Proxima Nova Bold'), local('ProximaNova-Bold');
+    font-weight: 600;
+  }
+  @font-face {
+    font-family: 'Proxima Nova';
+    src: local('Proxima Nova Bold'), local('ProximaNova-Bold');
+    font-weight: 700;
+  }
+</style>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --sq-blue: #4075BF;
+    --sq-blue-hover: #3668ad;
+    --sq-blue-light: rgba(64, 117, 191, 0.08);
+    --text-dark: #2d3654;
+    --text-body: #4a5568;
+    --text-muted: #8b95a5;
+    --text-label: #7886a0;
+    --border: #e2e6ee;
+    --border-light: #edf0f5;
+    --bg-page: #f0f2f5;
+    --bg-card: #ffffff;
+    --bg-info: #f5f4f0;
+    --bg-hover: #edf1f7;
+    --overlay: rgba(55, 65, 95, 0.65);
+    --radius: 8px;
+    --radius-lg: 12px;
+    --shadow-card: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-modal: 0 20px 60px rgba(0,0,0,0.15), 0 4px 16px rgba(0,0,0,0.08);
+    --shadow-dropdown: 0 4px 20px rgba(0,0,0,0.1), 0 1px 4px rgba(0,0,0,0.06);
+    --font: 'Proxima Nova', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg-page);
+    color: var(--text-dark);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ═══════ OUTER CARD — Instagram Settings Block ═══════ */
+  .ig-block {
+    width: 100%;
+    max-width: 600px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    padding: 24px 28px;
+  }
+
+  /* Section row */
+  .ig-section {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .ig-section:first-child { padding-top: 0; }
+  .ig-section:last-child { border-bottom: none; padding-bottom: 0; }
+
+  /* Labels */
+  .ig-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-label);
+    margin-bottom: 10px;
+  }
+
+  .ig-label__help {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1.5px solid var(--text-label);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-label);
+    cursor: help;
+    line-height: 1;
+  }
+
+  /* Radio group */
+  .radio-group {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .radio-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--text-dark);
+    user-select: none;
+  }
+
+  .radio-option input { display: none; }
+
+  .radio-circle {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.15s;
+    flex-shrink: 0;
+  }
+
+  .radio-circle::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--sq-blue);
+    transform: scale(0);
+    transition: transform 0.15s;
+  }
+
+  .radio-option input:checked + .radio-circle {
+    border-color: var(--sq-blue);
+  }
+
+  .radio-option input:checked + .radio-circle::after {
+    transform: scale(1);
+  }
+
+  /* Collaborator field row */
+  .collab-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .collab-field {
+    flex: 1;
+    min-height: 44px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 6px 12px;
+  }
+
+  .collab-field--empty {
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+
+  /* Outer tags */
+  .outer-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--sq-blue);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 6px;
+    max-width: 100%;
+  }
+
+  .outer-tag__text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .outer-tag__remove {
+    border: none;
+    background: none;
+    color: rgba(255,255,255,0.85);
+    cursor: pointer;
+    padding: 0;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .outer-tag__remove:hover {
+    color: #fff;
+  }
+
+  /* Add button */
+  .btn-add {
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    background: var(--sq-blue);
+    border: none;
+    border-radius: var(--radius);
+    padding: 0 20px;
+    cursor: pointer;
+    transition: background 0.15s;
+    white-space: nowrap;
+    min-height: 44px;
+  }
+
+  .btn-add:hover { background: var(--sq-blue-hover); }
+
+  /* ═══════ MODAL OVERLAY ═══════ */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--overlay);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 24px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+  }
+
+  .modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* ═══════ MODAL ═══════ */
+  .modal {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-modal);
+    width: 100%;
+    max-width: 460px;
+    transform: translateY(8px) scale(0.98);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .modal-overlay.active .modal {
+    transform: translateY(0) scale(1);
+  }
+
+  /* Modal header */
+  .modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px 0;
+  }
+
+  .modal__title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-dark);
+  }
+
+  .modal__close {
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    transition: color 0.15s, background 0.15s;
+    padding: 0;
+  }
+
+  .modal__close:hover {
+    color: var(--text-dark);
+    background: var(--bg-hover);
+  }
+
+  .modal__close svg { width: 20px; height: 20px; }
+
+  /* Modal body */
+  .modal__body {
+    padding: 16px 24px 24px;
+  }
+
+  /* Search input */
+  .search-wrap {
+    position: relative;
+    margin-bottom: 12px;
+  }
+
+  .search-input {
+    width: 100%;
+    font-family: var(--font);
+    font-size: 14px;
+    padding: 10px 40px 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-card);
+    color: var(--text-dark);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .search-input::placeholder {
+    color: var(--text-muted);
+  }
+
+  .search-input:focus {
+    border-color: var(--sq-blue);
+  }
+
+  /* Spinner in input */
+  .search-spinner {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--border);
+    border-top-color: var(--sq-blue);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    display: none;
+  }
+
+  .search-spinner.active { display: block; }
+
+  @keyframes spin { to { transform: translateY(-50%) rotate(360deg); } }
+
+  /* Info box */
+  .info-box {
+    background: var(--bg-info);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--text-body);
+    margin-bottom: 16px;
+  }
+
+  /* Dropdown */
+  .dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-dropdown);
+    z-index: 10;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-2px);
+    transition: all 0.2s ease;
+  }
+
+  .dropdown.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(2px);
+  }
+
+  .dropdown__list { list-style: none; }
+
+  .dropdown__item {
+    padding: 10px 14px;
+    font-size: 14px;
+    color: var(--text-dark);
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+
+  .dropdown__item:hover {
+    background: var(--bg-hover);
+  }
+
+  /* Limit error */
+  .search-wrap.at-limit .search-input {
+    border-color: #c0392b;
+  }
+
+  .search-wrap.at-limit .search-input:focus {
+    border-color: #c0392b;
+  }
+
+  .limit-hint {
+    display: none;
+    font-size: 12px;
+    color: #c0392b;
+    margin-top: 4px;
+  }
+
+  .search-wrap.at-limit .limit-hint {
+    display: block;
+  }
+
+  /* Added Collaborators section */
+  .added-section {
+    margin-top: 16px;
+    display: none;
+  }
+
+  .added-section.active { display: block; }
+
+  .added-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-label);
+    margin-bottom: 8px;
+  }
+
+  .added-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  /* Modal tags — same style as outer */
+  .modal-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--sq-blue);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 6px;
+    max-width: 100%;
+  }
+
+  .modal-tag__text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .modal-tag__remove {
+    border: none;
+    background: none;
+    color: rgba(255,255,255,0.85);
+    cursor: pointer;
+    padding: 0;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .modal-tag__remove:hover {
+    color: #fff;
+  }
+
+  /* Modal footer */
+  .modal__footer {
+    padding: 0 24px 20px;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .btn-done {
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    background: var(--sq-blue);
+    border: none;
+    border-radius: var(--radius);
+    padding: 0 24px;
+    height: 48px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .btn-done:hover { background: var(--sq-blue-hover); }
+
+  /* ═══════ RESPONSIVE ═══════ */
+  @media (max-width: 599px) {
+    body { padding: 1rem; }
+    .ig-block { padding: 16px 18px; }
+
+    .modal-overlay { padding: 0; }
+
+    .modal {
+      max-width: none;
+      width: 100%;
+      height: 100%;
+      border-radius: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal__body {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .modal__footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════ OUTER — Instagram Settings Block ═══════ -->
+<div class="ig-block">
+
+  <div class="ig-section">
+    <div class="ig-label">
+      Instagram Post Type
+      <span class="ig-label__help">?</span>
+    </div>
+    <div class="radio-group">
+      <label class="radio-option">
+        <input type="radio" name="postType" value="feed" checked>
+        <span class="radio-circle"></span>
+        Feed/Reel
+      </label>
+      <label class="radio-option">
+        <input type="radio" name="postType" value="story">
+        <span class="radio-circle"></span>
+        Story
+      </label>
+    </div>
+  </div>
+
+  <div class="ig-section">
+    <div class="ig-label">
+      Instagram Publishing Method
+      <span class="ig-label__help">?</span>
+    </div>
+    <div class="radio-group">
+      <label class="radio-option">
+        <input type="radio" name="pubMethod" value="direct" checked>
+        <span class="radio-circle"></span>
+        Attempt Direct Publishing
+      </label>
+      <label class="radio-option">
+        <input type="radio" name="pubMethod" value="reminder">
+        <span class="radio-circle"></span>
+        Get a Reminder
+      </label>
+    </div>
+  </div>
+
+  <div class="ig-section">
+    <div class="ig-label">
+      Add Collaborator
+      <span class="ig-label__help">?</span>
+    </div>
+    <div class="collab-row">
+      <div class="collab-field" id="outerField"></div>
+      <button class="btn-add" id="btnOpen">Add</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════ MODAL ═══════ -->
+<div class="modal-overlay" id="overlay">
+  <div class="modal">
+    <div class="modal__header">
+      <div class="modal__title">Add collaborator</div>
+      <button class="modal__close" id="btnClose">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="modal__body">
+      <div class="search-wrap" id="searchWrap">
+        <input
+          type="text"
+          class="search-input"
+          id="searchInput"
+          placeholder="Enter exact username"
+          autocomplete="off"
+          spellcheck="false"
+          maxlength="30"
+        >
+        <div class="search-spinner" id="spinner"></div>
+
+        <div class="dropdown" id="dropdown">
+          <ul class="dropdown__list" id="dropdownList"></ul>
+        </div>
+        <div class="limit-hint">Instagram allows a maximum of 5 collaborators.</div>
+      </div>
+
+      <div class="info-box">
+        Enter the exact Instagram username. Only public business or creator accounts active for at least 30 days can be added. Invalid or private usernames will be skipped when the post is published.
+      </div>
+
+      <div class="added-section" id="addedSection">
+        <div class="added-label">Added Collaborators</div>
+        <div class="added-tags" id="addedTags"></div>
+      </div>
+    </div>
+
+    <div class="modal__footer">
+      <button class="btn-done" id="btnDone">Done</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const MAX_COLLABS = 5;
+  let selected = []; // [{handle}]
+  let searchTimeout;
+
+  const overlay    = document.getElementById('overlay');
+  const btnOpen    = document.getElementById('btnOpen');
+  const btnClose   = document.getElementById('btnClose');
+  const btnDone    = document.getElementById('btnDone');
+  const input      = document.getElementById('searchInput');
+  const spinner    = document.getElementById('spinner');
+  const dropdown   = document.getElementById('dropdown');
+  const ddList     = document.getElementById('dropdownList');
+  const addedSec   = document.getElementById('addedSection');
+  const addedTags  = document.getElementById('addedTags');
+  const outerField = document.getElementById('outerField');
+  const searchWrap = document.getElementById('searchWrap');
+
+  // ═══════ Generate fake results ═══════
+  function generateResults(query) {
+    const clean = query.replace(/^@/, '').toLowerCase().trim();
+    if (!clean) return [];
+    // Generate 3 suggestions based on what was typed
+    const bases = [clean, clean + 'grey', clean + 'rogers'];
+    return bases.map(b => '@' + b);
+  }
+
+  // ═══════ Open / Close Modal ═══════
+  function openModal() {
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    renderModalTags();
+    searchWrap.classList.remove('at-limit');
+    setTimeout(() => input.focus(), 100);
+  }
+
+  function closeModal() {
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+    input.value = '';
+    hideDropdown();
+    spinner.classList.remove('active');
+    clearTimeout(searchTimeout);
+  }
+
+  btnOpen.addEventListener('click', openModal);
+  btnClose.addEventListener('click', closeModal);
+  overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && overlay.classList.contains('active')) closeModal();
+  });
+
+  // ═══════ Done ═══════
+  btnDone.addEventListener('click', () => {
+    closeModal();
+    renderOuterTags();
+  });
+
+  // ═══════ Search ═══════
+  input.addEventListener('input', () => {
+    const val = input.value.trim();
+    clearTimeout(searchTimeout);
+    hideDropdown();
+
+    if (selected.length >= MAX_COLLABS) {
+      spinner.classList.remove('active');
+      return;
+    }
+
+    if (val.length < 2) {
+      spinner.classList.remove('active');
+      return;
+    }
+
+    // Show spinner
+    spinner.classList.add('active');
+
+    searchTimeout = setTimeout(() => {
+      spinner.classList.remove('active');
+      const results = generateResults(val);
+      showDropdown(results);
+    }, 500);
+  });
+
+  function showDropdown(results) {
+    ddList.innerHTML = '';
+    results.forEach(handle => {
+      const li = document.createElement('li');
+      li.className = 'dropdown__item';
+      li.textContent = handle;
+      li.addEventListener('click', () => {
+        if (selected.length >= MAX_COLLABS) return;
+        if (!selected.some(s => s.handle === handle)) {
+          selected.push({ handle });
+        }
+        input.value = '';
+        hideDropdown();
+        renderModalTags();
+        updateLimitState();
+      });
+      ddList.appendChild(li);
+    });
+    dropdown.classList.add('active');
+  }
+
+  function hideDropdown() {
+    dropdown.classList.remove('active');
+  }
+
+  // Close dropdown on outside click
+  document.addEventListener('click', e => {
+    const wrap = document.getElementById('searchWrap');
+    if (!wrap.contains(e.target)) hideDropdown();
+  });
+
+  // ═══════ Modal Tags ═══════
+  function renderModalTags() {
+    if (selected.length === 0) {
+      addedSec.classList.remove('active');
+      return;
+    }
+    addedSec.classList.add('active');
+    addedTags.innerHTML = '';
+    selected.forEach(s => {
+      const tag = document.createElement('span');
+      tag.className = 'modal-tag';
+      tag.innerHTML = `<span class="modal-tag__text">${s.handle}</span><button class="modal-tag__remove" aria-label="Remove">\u00d7</button>`;
+      tag.querySelector('.modal-tag__remove').addEventListener('click', () => {
+        selected = selected.filter(x => x.handle !== s.handle);
+        renderModalTags();
+        updateLimitState();
+      });
+      addedTags.appendChild(tag);
+    });
+  }
+
+  // ═══════ Outer Tags ═══════
+  function renderOuterTags() {
+    outerField.innerHTML = '';
+    if (selected.length === 0) {
+      outerField.classList.add('collab-field--empty');
+      return;
+    }
+    outerField.classList.remove('collab-field--empty');
+    selected.forEach(s => {
+      const tag = document.createElement('span');
+      tag.className = 'outer-tag';
+      tag.innerHTML = `<span class="outer-tag__text">${s.handle}</span><button class="outer-tag__remove" aria-label="Remove">\u00d7</button>`;
+      tag.querySelector('.outer-tag__remove').addEventListener('click', () => {
+        selected = selected.filter(x => x.handle !== s.handle);
+        renderOuterTags();
+      });
+      outerField.appendChild(tag);
+    });
+  }
+
+  // ═══════ Limit ═══════
+  function updateLimitState() {
+    const atLimit = selected.length >= MAX_COLLABS;
+    if (!atLimit) {
+      searchWrap.classList.remove('at-limit');
+    }
+    if (atLimit) {
+      hideDropdown();
+      spinner.classList.remove('active');
+      clearTimeout(searchTimeout);
+    }
+  }
+
+  input.addEventListener('focus', () => {
+    if (selected.length >= MAX_COLLABS) {
+      searchWrap.classList.add('at-limit');
+    }
+  });
+
+  // Init
+  renderOuterTags();
+})();
+</script>
+
+</body>
+</html>
