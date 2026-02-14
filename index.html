@@ -437,10 +437,21 @@
   /* Added Collaborators section */
   .added-section {
     margin-top: 16px;
-    display: none;
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transition: grid-template-rows 0.25s ease, opacity 0.2s ease, margin 0.25s ease;
+    overflow: hidden;
   }
 
-  .added-section.active { display: block; }
+  .added-section > * {
+    overflow: hidden;
+  }
+
+  .added-section.active {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
 
   .added-label {
     font-size: 11px;
@@ -455,6 +466,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
+    min-height: 0;
   }
 
   /* Modal tags — same style as outer */
