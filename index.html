@@ -811,7 +811,9 @@
       const tag = document.createElement('span');
       tag.className = 'outer-tag';
       tag.innerHTML = `<span class="outer-tag__text">${s.handle}</span><button class="outer-tag__remove" aria-label="Remove">\u00d7</button>`;
-      tag.querySelector('.outer-tag__remove').addEventListener('click', () => {
+      tag.addEventListener('click', e => e.stopPropagation());
+      tag.querySelector('.outer-tag__remove').addEventListener('click', e => {
+        e.stopPropagation();
         selected = selected.filter(x => x.handle !== s.handle);
         renderOuterTags();
       });
